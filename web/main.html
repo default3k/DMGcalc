@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMGcalc</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="icon" href="Logo_w_trans.png" type="image/png">
+    <script src="eel.js"></script>
+    <script>
+        window.onload = () => {
+            // Устанавливаем фиксированный размер окна при загрузке
+            const minWidth = 400;
+            const minHeight = 700;
+
+            // Получаем текущий размер окна
+            function enforceMinimumWindowSize() {
+                const currentWidth = window.outerWidth;
+                const currentHeight = window.outerHeight;
+
+                // Если размер окна меньше минимального, возвращаем его к минимальным значениям
+                if (currentWidth < minWidth || currentHeight < minHeight) {
+                    window.resizeTo(minWidth, minHeight);
+                }
+            }
+
+            // Проверка размера при изменении
+            window.onresize = enforceMinimumWindowSize;
+
+            // Устанавливаем начальный размер окна
+            window.resizeTo(minWidth, minHeight);
+            enforceMinimumWindowSize(); // Применить сразу после загрузки
+
+            // Добавляем обработчик события для клавиши Enter
+            document.getElementById("userInput").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    calculate(); // Вызов функции calculate при нажатии Enter
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+    <div class="main">
+        <h1>DMGcalc</h1>
+        <input type="number" id="userInput" placeholder="Введите урон" />
+        <button onclick="calculate()">Вычислить</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function calculate() {
+            const userInput = document.getElementById("userInput").value;
+            const resultsContainer = document.getElementById("results");
+
+            resultsContainer.innerHTML = ""; // Очистка предыдущих результатов
+
+            // Вызов Python-функции для расчёта
+            const response = await eel.calculate_damage(userInput)();
+
+            // Проверка на наличие ошибки
+            if (response.error) {
+                resultsContainer.innerHTML = `<p class="error">${response.error}</p>`;
+                return;
+            }
+
+            // Создание элемента с введённым значением
+            const inputDisplay = document.createElement("p");
+            inputDisplay.innerHTML = `Введённый урон: <strong>${userInput}</strong>`;
+            resultsContainer.appendChild(inputDisplay);
+
+            // Список результатов
+            const results = [
+                { label: "2 атаки", value: response.damage1 },
+                { label: "3 атаки", value: response.damage2 },
+                { label: "4 атаки", value: response.damage3 },
+                { label: "5 атак", value: response.damage4 },
+                { label: "6 атак", value: response.damage5 },
+                { label: "7 атак", value: response.damage6 },
+                { label: "8 атак", value: response.damage7 },
+            ];
+
+            // Функция для анимации появления результата
+            function animateValue(element, start, end, duration) {
+                const range = end - start;
+                const increment = range / (duration / 10);
+                let current = start;
+
+                const step = () => {
+                    current += increment;
+                    if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                        current = end;
+                        element.textContent = Math.round(current);
+                    } else {
+                        element.textContent = Math.round(current);
+                        requestAnimationFrame(step);
+                    }
+                };
+                step();
+            }
+
+            // Постепенное добавление результатов
+            results.forEach((result, index) => {
+                setTimeout(() => {
+                    const resultDiv = document.createElement("div");
+                    resultDiv.className = "result-item";
+                    resultDiv.innerHTML = `<span>${result.label}:</span> <strong>0</strong>`;
+                    resultsContainer.appendChild(resultDiv);
+
+                    const valueElement = resultDiv.querySelector("strong");
+                    animateValue(valueElement, 0, result.value, 1000); // Анимация числа
+                }, index * 500); // Задержка между добавлением каждого результата
+            });
+        }
+    </script>
+</body>
+</html>

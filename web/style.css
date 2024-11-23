@@ -1,0 +1,97 @@
+/* Общий стиль */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Заголовок */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #f1c40f;
+}
+
+/* Поле ввода */
+input[type="number"] {
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2c2c2c;
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Кнопка */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f1c40f;
+    color: #000000;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #d4ac0d;
+}
+
+/* Результаты */
+#results {
+    margin-top: 20px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.result-item span {
+    color: #f1c40f;
+}
+
+.result-item strong {
+    color: #ffffff;
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ошибки */
+.error {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-top: 10px;
+}
